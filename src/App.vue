@@ -28,7 +28,7 @@ export default {
   --success-color: #a3db33;
   --fail-color: #ed3221;
   --font-color: #121212;
-  --active-link: #383f55;
+  --accent-color: #383f55;
 }
 html {
   background: var(--background-color);
@@ -52,7 +52,7 @@ html {
     color: #2c3e50;
 
     &.router-link-exact-active {
-      color: var(--active-link);
+      color: var(--accent-color);
     }
   }
 }

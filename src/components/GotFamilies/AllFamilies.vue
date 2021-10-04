@@ -1,52 +1,60 @@
 <template>
-  <button class="filter-btn" @click="changeFilter">{{ filterBtnText }}</button>
-  <ul v-if="!isFiltered">
-    <li
-      v-for="(familySet, id) in this.$store.getters.getAllFamilies"
-      :key="id"
-      v-bind="familySet"
+  <section class="family-list-section">
+    <button class="filter-btn" @click="changeFilter">
+      {{ filterBtnText }}
+    </button>
+    <ul v-if="!isFiltered" class="family-group-list">
+      <li
+        v-for="(familySet, id) in this.$store.getters.getAllFamilies"
+        :key="id"
+        v-bind="familySet"
+      >
+        <ul class="families-list">
+          <li
+            v-for="family in familySet.families"
+            :key="family.name"
+            v-bind="familySet"
+          >
+            {{ family.name }}
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <ul v-if="isFiltered" class="family-group-list">
+      <li
+        v-for="(familySet, id) in this.$store.getters.getAllFamilies.slice(
+          limitMin,
+          limitMax
+        )"
+        :key="id"
+        v-bind="familySet"
+      >
+        <ul class="families-list">
+          <li
+            v-for="family in familySet.families"
+            :key="family.name"
+            v-bind="familySet"
+          >
+            {{ family.name }}
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <button
+      class="switch-page-btn"
+      @click="switchPageBackward"
+      v-show="pageSwitched"
     >
-      <ul>
-        <li
-          v-for="family in familySet.families"
-          :key="family.name"
-          v-bind="familySet"
-        >
-          {{ family.name }}
-        </li>
-      </ul>
-    </li>
-  </ul>
-  <ul v-if="isFiltered">
-    <li
-      v-for="(familySet, id) in this.$store.getters.getAllFamilies.slice(
-        limitMin,
-        limitMax
-      )"
-      :key="id"
-      v-bind="familySet"
+      Previous Families
+    </button>
+    <button
+      class="switch-page-btn"
+      @click="switchPageForward"
+      v-show="isFiltered"
     >
-      <ul>
-        <li
-          v-for="family in familySet.families"
-          :key="family.name"
-          v-bind="familySet"
-        >
-          {{ family.name }}
-        </li>
-      </ul>
-    </li>
-  </ul>
-  <button
-    class="switch-page-btn"
-    @click="switchPageBackward"
-    v-show="pageSwitched"
-  >
-    Previous Families
-  </button>
-  <button class="switch-page-btn" @click="switchPageForward">
-    Next families
-  </button>
+      Next families
+    </button>
+  </section>
 </template>
 
 <script>
@@ -91,3 +99,31 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+.family-group-list {
+  max-width: 80vw;
+  margin: 0 auto;
+}
+.families-list {
+  margin: 1rem 0;
+  border: 1px solid darkgrey;
+}
+.families-list > li {
+  text-align: left;
+  padding: 0.5rem 2rem;
+}
+.families-list > li:nth-child(1n + 1) {
+  color: var(--background-color);
+  background-color: var(--accent-color);
+  border-bottom: 1px solid var(--primary-color);
+}
+.families-list > li:nth-child(2n + 2) {
+  color: var(--font-color);
+  background-color: snow;
+}
+</style>
