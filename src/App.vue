@@ -1,5 +1,14 @@
 <template>
-  <div id="nav"><router-link to="/">Home</router-link></div>
+  <header class="main-header">
+    <img
+      class="got-logo"
+      alt="Game Of Thrones Logo"
+      src="@/assets/Game_of_Thrones_logo.svg"
+    />
+    <nav class="main-nav">
+      <router-link to="/">All Families</router-link>
+    </nav>
+  </header>
   <router-view />
 </template>
 
@@ -13,23 +22,37 @@ export default {
 </script>
 
 <style lang="scss">
+@import url("https://fonts.googleapis.com/css2?family=Cinzel+Decorative&display=swap");
+:root {
+  --background-color: #fafafa;
+  --success-color: #a3db33;
+  --fail-color: #ed3221;
+  --font-color: #121212;
+  --active-link: #383f55;
+}
+html {
+  background: var(--background-color);
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  color: var(--font-color);
 }
-
-#nav {
+.got-logo {
+  max-width: 80vw;
+}
+.main-nav {
   padding: 30px;
 
   a {
+    font-family: "Cinzel Decorative", cursive;
     font-weight: bold;
     color: #2c3e50;
 
     &.router-link-exact-active {
-      color: #42b983;
+      color: var(--active-link);
     }
   }
 }
