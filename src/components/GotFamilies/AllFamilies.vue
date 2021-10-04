@@ -10,13 +10,13 @@
         v-bind="familySet"
       >
         <ul class="families-list">
-          <li
+          <FamilyListElement
             v-for="family in familySet.families"
             :key="family.name"
+            :familyName="family.name"
             v-bind="familySet"
           >
-            {{ family.name }}
-          </li>
+          </FamilyListElement>
         </ul>
       </li>
     </ul>
@@ -30,13 +30,13 @@
         v-bind="familySet"
       >
         <ul class="families-list">
-          <li
+          <FamilyListElement
             v-for="family in familySet.families"
             :key="family.name"
+            :familyName="family.name"
             v-bind="familySet"
           >
-            {{ family.name }}
-          </li>
+          </FamilyListElement>
         </ul>
       </li>
     </ul>
@@ -58,8 +58,10 @@
 </template>
 
 <script>
+import FamilyListElement from "./FamilyListElement.vue";
 export default {
   name: "AllFamilies",
+  components: { FamilyListElement },
   data() {
     return {
       isFiltered: false,
@@ -100,7 +102,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 ul {
   list-style-type: none;
   padding: 0;
