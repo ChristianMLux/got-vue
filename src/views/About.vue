@@ -1,5 +1,15 @@
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
-  </div>
+  <AllFamilies />
 </template>
+
+<script>
+// @ is an alias to /src
+import AllFamilies from "@/components/GotFamilies/AllFamilies.vue";
+
+export default {
+  name: "About",
+  components: {
+    AllFamilies,
+  },
+};
+</script>

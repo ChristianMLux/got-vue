@@ -1,13 +1,13 @@
 import { createStore } from "vuex";
 
-let housePageCount = 9;
+let housePageCount = 10;
 export default createStore({
   state: {
     allFamilies: [],
   },
   mutations: {
     setAllFamilies(state, payload) {
-      state.allFamilies = payload;
+      state.allFamilies.push(payload);
     },
   },
   actions: {
@@ -24,8 +24,10 @@ export default createStore({
           },
           method: "GET",
         });
-        const _families = await apiResponse.json();
-        state.allFamilies.push(_families);
+        state.commit({
+          type: "setAllFamilies",
+          families: await apiResponse.json(),
+        });
       }
     },
   },
