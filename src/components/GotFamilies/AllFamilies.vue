@@ -1,8 +1,8 @@
 <template>
   <section class="family-list-section">
-    <button class="filter-btn" @click="changeFilter">
-      {{ filterBtnText }}
-    </button>
+    <main-btn buttonClass="primary" class="filter-btn" @click="changeFilter"
+      ><p>{{ filterBtnText }}</p></main-btn
+    >
     <ul v-if="!isFiltered" class="family-group-list">
       <li
         v-for="(familySet, id) in this.$store.getters.getAllFamilies"
@@ -40,20 +40,19 @@
         </ul>
       </li>
     </ul>
-    <button
+    <main-btn
+      buttonClass="primary"
       class="switch-page-btn"
       @click="switchPageBackward"
       v-show="pageSwitched"
+      ><p>prev</p></main-btn
     >
-      Previous Families
-    </button>
-    <button
-      class="switch-page-btn"
+    <main-btn
+      buttonClass="primary"
       @click="switchPageForward"
       v-show="isFiltered"
+      ><p>next >></p></main-btn
     >
-      Next families
-    </button>
   </section>
 </template>
 
@@ -118,14 +117,5 @@ ul {
 .families-list > li {
   text-align: left;
   padding: 0.5rem 2rem;
-}
-.families-list > li:nth-child(1n + 1) {
-  color: var(--background-color);
-  background-color: var(--accent-color);
-  border-bottom: 1px solid var(--primary-color);
-}
-.families-list > li:nth-child(2n + 2) {
-  color: var(--font-color);
-  background-color: snow;
 }
 </style>
