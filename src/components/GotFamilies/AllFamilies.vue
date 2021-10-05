@@ -1,8 +1,24 @@
 <template>
   <section class="family-list-section">
-    <main-btn buttonClass="primary" class="filter-btn" @click="changeFilter"
-      ><p>{{ filterBtnText }}</p></main-btn
-    >
+    <div class="button-wrapper">
+      <main-btn
+        buttonClass="primary"
+        class="switch-page-btn"
+        @click="switchPageBackward"
+        v-show="pageSwitched"
+        ><p>&#8606; prev</p></main-btn
+      >
+      <main-btn buttonClass="primary" class="filter-btn" @click="changeFilter"
+        ><p>{{ filterBtnText }}</p></main-btn
+      >
+      <main-btn
+        buttonClass="primary"
+        @click="switchPageForward"
+        v-show="isFiltered"
+        ><p>next &#8608;</p></main-btn
+      >
+    </div>
+
     <ul v-if="!isFiltered" class="family-group-list">
       <li
         v-for="(familySet, id) in this.$store.getters.getAllFamilies"
@@ -14,7 +30,7 @@
             v-for="family in familySet.families"
             :key="family.name"
             :familyName="family.name"
-            v-bind="familySet"
+            v-bind="family"
           >
           </FamilyListElement>
         </ul>
@@ -34,25 +50,12 @@
             v-for="family in familySet.families"
             :key="family.name"
             :familyName="family.name"
-            v-bind="familySet"
+            v-bind="family"
           >
           </FamilyListElement>
         </ul>
       </li>
     </ul>
-    <main-btn
-      buttonClass="primary"
-      class="switch-page-btn"
-      @click="switchPageBackward"
-      v-show="pageSwitched"
-      ><p>prev</p></main-btn
-    >
-    <main-btn
-      buttonClass="primary"
-      @click="switchPageForward"
-      v-show="isFiltered"
-      ><p>next >></p></main-btn
-    >
   </section>
 </template>
 
@@ -79,6 +82,7 @@ export default {
   methods: {
     changeFilter() {
       this.isFiltered = !this.isFiltered;
+      this.pageSwitched = !this.pageSwitched;
     },
     switchPageForward() {
       if (this.limitMax <= 10) {
@@ -117,5 +121,13 @@ ul {
 .families-list > li {
   text-align: left;
   padding: 0.5rem 2rem;
+}
+
+.button-wrapper {
+  margin: 0 auto;
+  max-width: 80vw;
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
 }
 </style>

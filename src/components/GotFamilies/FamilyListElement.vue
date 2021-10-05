@@ -3,7 +3,14 @@
     :to="{
       name: 'FamilyDetails',
       params: {
+        url,
         familyName,
+        coatOfArms,
+        region,
+        currentLord,
+        founder,
+        heir,
+        overlord,
       },
     }"
   >
@@ -17,12 +24,33 @@
 export default {
   name: "FamilyListElement",
   props: {
+    url: {
+      type: String,
+    },
+    overlord: {
+      type: String,
+    },
+    heir: {
+      type: String,
+    },
+    founder: {
+      type: String,
+    },
+    ancestralWeapons: {
+      type: Array,
+    },
+    currentLord: {
+      type: String,
+    },
+    region: {
+      type: String,
+    },
+    coatOfArms: {
+      type: String,
+    },
     familyName: {
       type: String,
       required: true,
-    },
-    key: {
-      type: [String, Number],
     },
   },
 };

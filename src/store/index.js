@@ -4,13 +4,123 @@ let housePageCount = 10;
 export default createStore({
   state: {
     allFamilies: [],
+    currentFamily: "",
+    currentFamilyURL: "",
+    currentLord: "",
+    currentLordURL: "",
+    currentOverlord: "",
+    currentOverlordURL: "",
+    currentHeir: "",
+    currentHeirURL: "",
+    currentFounder: "",
+    currentFounderURL: "",
   },
   mutations: {
+    setCurrentFounderURL(state, payload) {
+      state.currentFounderURL = payload.url;
+    },
+    setCurrentFounder(state, payload) {
+      state.currentFounder = payload.founder;
+    },
+    setCurrentHeirURL(state, payload) {
+      state.currentHeirURL = payload.url;
+    },
+    setCurrentHeir(state, payload) {
+      state.currentHeir = payload.heir;
+    },
+    setCurrentOverlordURL(state, payload) {
+      state.currentOverlordURL = payload.url;
+    },
+    setCurrentOverlord(state, payload) {
+      state.currentOverlord = payload.overlord;
+    },
+    setCurrentLordURL(state, payload) {
+      state.currentLordURL = payload.url;
+    },
+    setCurrentLord(state, payload) {
+      state.currentLord = payload.lord;
+    },
+    setCurrentFamilyURL(state, payload) {
+      state.currentFamilyURL = payload.url;
+    },
     setAllFamilies(state, payload) {
       state.allFamilies.push(payload);
     },
+    setCurrentFamily(state, payload) {
+      state.currentFamily = payload.family;
+    },
   },
   actions: {
+    async setCurrentFounder(state) {
+      let url = state.getters.getCurrentFounderURL;
+      const apiResponse = await fetch(url, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        method: "GET",
+      });
+      state.commit({
+        type: "setCurrentFounder",
+        founder: await apiResponse.json(),
+      });
+    },
+    async setCurrentHeir(state) {
+      let url = state.getters.getCurrentHeirURL;
+      const apiResponse = await fetch(url, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        method: "GET",
+      });
+      state.commit({
+        type: "setCurrentHeir",
+        heir: await apiResponse.json(),
+      });
+    },
+    async setCurrentOverlord(state) {
+      let url = state.getters.getCurrentOverlordURL;
+      const apiResponse = await fetch(url, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        method: "GET",
+      });
+      state.commit({
+        type: "setCurrentOverlord",
+        overlord: await apiResponse.json(),
+      });
+    },
+    async setCurrentLord(state) {
+      let url = state.getters.getCurrentLordURL;
+      const apiResponse = await fetch(url, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        method: "GET",
+      });
+      state.commit({
+        type: "setCurrentLord",
+        lord: await apiResponse.json(),
+      });
+    },
+    async setCurrentFamily(state) {
+      let url = state.getters.getCurrentFamilyURL;
+      const apiResponse = await fetch(url, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        method: "GET",
+      });
+      state.commit({
+        type: "setCurrentFamily",
+        family: await apiResponse.json(),
+      });
+    },
     async setAllFamilies(state) {
       for (let i = 0; i < housePageCount; i++) {
         let url =
@@ -33,6 +143,36 @@ export default createStore({
   },
   modules: {},
   getters: {
+    getCurrentFounderURL(state) {
+      return state.currentFounderURL;
+    },
+    getCurrentFounder(state) {
+      return state.currentFounder;
+    },
+    getCurrentHeirURL(state) {
+      return state.currentHeirURL;
+    },
+    getCurrentHeir(state) {
+      return state.currentHeir;
+    },
+    getCurrentOverlordURL(state) {
+      return state.currentOverlordURL;
+    },
+    getCurrentOverlord(state) {
+      return state.currentOverlord;
+    },
+    getCurrentLordURL(state) {
+      return state.currentLordURL;
+    },
+    getCurrentLord(state) {
+      return state.currentLord;
+    },
+    getCurrentFamilyURL(state) {
+      return state.currentFamilyURL;
+    },
+    getCurrentFamily(state) {
+      return state.currentFamily;
+    },
     getAllFamilies(state) {
       return state.allFamilies;
     },

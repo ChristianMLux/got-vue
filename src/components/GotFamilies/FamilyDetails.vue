@@ -1,11 +1,206 @@
 <template>
   <section class="details-section">
-    <h2>{{ this.$router.params.familyName }}</h2>
+    <div class="house-heading">
+      <h2>{{ this.$route.params.familyName }}</h2>
+      <p class="words">{{ this.$store.getters.getCurrentFamily.words }}</p>
+    </div>
+    <blockquote class="coat-of-arms" v-show="this.$route.params.coatOfArms">
+      &#187; {{ this.$route.params.coatOfArms }} &#171;
+    </blockquote>
+    <div class="house-info-wrapper">
+      <div class="inner-info-wrapper" v-show="this.$route.params.region">
+        <p class="region-name">Region:</p>
+        <p>{{ this.$route.params.region }}</p>
+      </div>
+      <div class="inner-info-wrapper" v-show="this.$route.params.currentLord">
+        <p class="current-lord">Current Lord:</p>
+        <p v-if="this.$store.getters.getCurrentLord.titles[0]">
+          {{ this.$store.getters.getCurrentLord.titles[0] }}
+          {{ this.$store.getters.getCurrentLord.name }}
+        </p>
+        <p v-else>{{ this.$store.getters.getCurrentLord.name }}</p>
+      </div>
+      <div
+        class="inner-info-wrapper"
+        v-if="this.$store.getters.getCurrentFounder"
+      >
+        <p class="house-founder">Founder:</p>
+
+        <p v-if="this.$store.getters.getCurrentFounder.aliases[0]">
+          {{ this.$store.getters.getCurrentFounder.name }}
+          {{ this.$store.getters.getCurrentFounder.aliases[0] }}
+        </p>
+        <p v-else>{{ this.$store.getters.getCurrentFounder.name }}</p>
+      </div>
+      <div
+        class="inner-info-wrapper"
+        v-if="this.$store.getters.getCurrentFamily.heir"
+      >
+        <p class="house-heir">Heir:</p>
+        <p>{{ this.$store.getters.getCurrentHeir.name }}</p>
+      </div>
+      <div class="inner-info-wrapper" v-show="this.$route.params.overlord">
+        <p class="house-overlord">Overlord:</p>
+        <p>{{ this.$store.getters.getCurrentOverlord.name }}</p>
+      </div>
+      <div
+        class="inner-info-wrapper"
+        v-if="this.$store.getters.getCurrentFamily.seats"
+      >
+        <p class="house-seats">Seats:</p>
+        <ul>
+          <li
+            v-for="seat in this.$store.getters.getCurrentFamily.seats"
+            :key="seat"
+          >
+            {{ seat }}
+          </li>
+        </ul>
+      </div>
+      <div
+        class="inner-info-wrapper"
+        v-show="!!this.$store.getters.getCurrentFamily.swornMembers"
+      >
+        <p class="house-seats">Sworn Member:</p>
+        <ul>
+          <li
+            v-for="member in this.$store.getters.getCurrentFamily.swornMembers"
+            :key="member"
+          >
+            {{ member }}
+          </li>
+        </ul>
+      </div>
+      <div
+        class="inner-info-wrapper"
+        v-show="!!this.$store.getters.getCurrentFamily.titles"
+      >
+        <p class="house-titles">Titles:</p>
+        <ul>
+          <li
+            v-for="title in this.$store.getters.getCurrentFamily.titles"
+            :key="title"
+          >
+            {{ title }}
+          </li>
+        </ul>
+      </div>
+    </div>
   </section>
 </template>
 
 <script>
 export default {
   name: "FamilyDetails",
+  methods: {
+    async setCurrentFamilyURL() {
+      await this.$store.commit("setCurrentFamilyURL", {
+        url: this.$route.params.url,
+      });
+    },
+    async setCurrentFamily() {
+      await this.$store.dispatch("setCurrentFamily");
+    },
+    async setCurrentLordURL() {
+      await this.$store.commit("setCurrentLordURL", {
+        url: this.$store.getters.getCurrentFamily.currentLord,
+      });
+    },
+    async setCurrentLord() {
+      await this.$store.dispatch("setCurrentLord");
+    },
+    async setCurrentOverlordURL() {
+      await this.$store.commit("setCurrentOverlordURL", {
+        url: this.$store.getters.getCurrentFamily.overlord,
+      });
+    },
+    async setCurrentOverlord() {
+      await this.$store.dispatch("setCurrentOverlord");
+    },
+    async setCurrentHeirURL() {
+      await this.$store.commit("setCurrentHeirURL", {
+        url: this.$store.getters.getCurrentFamily.heir,
+      });
+    },
+    async setCurrentHeir() {
+      await this.$store.dispatch("setCurrentHeir");
+    },
+    async setCurrentFounderURL() {
+      await this.$store.commit("setCurrentFounderURL", {
+        url: this.$store.getters.getCurrentFamily.founder,
+      });
+    },
+    async setCurrentFounder() {
+      await this.$store.dispatch("setCurrentFounder");
+    },
+  },
+  async created() {
+    this.setCurrentFamilyURL();
+    await this.setCurrentFamily();
+    await this.setCurrentLordURL();
+    await this.setCurrentLord();
+    await this.setCurrentOverlordURL();
+    await this.setCurrentOverlord();
+    await this.setCurrentHeirURL();
+    await this.setCurrentHeir();
+    await this.setCurrentFounderURL();
+    await this.setCurrentFounder();
+  },
+  beforeRouteUpdate() {
+    this.familyName = this.$route.params.familyName;
+  },
 };
 </script>
+
+<style lang="scss" scoped>
+.details-section {
+  margin: 0 auto;
+  max-width: 80vw;
+}
+.house-heading {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+  align-items: baseline;
+  background: var(--accent-color);
+  color: var(--background-color);
+  padding: 0.5rem;
+}
+h2 {
+  margin: 0;
+}
+.words {
+  margin: 0;
+}
+.coat-of-arms {
+  margin: 0;
+  padding: 2rem;
+  background: #cccccc6e;
+  font-style: italic;
+  border-left: 1px solid var(--accent-color);
+  border-right: 1px solid var(--accent-color);
+}
+.house-info-wrapper {
+  display: flex;
+  flex-flow: column;
+  align-items: flex-start;
+  border-bottom-left-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+  border: 1px solid var(--accent-color);
+  border-top: none;
+}
+.inner-info-wrapper {
+  width: 90%;
+  display: flex;
+  flex-flow: row;
+  p:first-child {
+    width: 25%;
+    text-align: left;
+    margin-left: 1rem;
+  }
+  p:last-child {
+    width: 75%;
+    text-align: left;
+  }
+}
+</style>
