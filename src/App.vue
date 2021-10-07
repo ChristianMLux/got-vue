@@ -6,7 +6,7 @@
       src="@/assets/Game_of_Thrones_logo.svg"
     />
     <nav class="main-nav">
-      <router-link to="/">All Families</router-link>
+      <router-link to="/" @click="resetCurrentFamily">All Families</router-link>
     </nav>
   </header>
   <router-view />
@@ -15,6 +15,14 @@
 <script>
 export default {
   name: "App",
+  methods: {
+    resetCurrentFamily() {
+      this.$store.commit("unsetArrays");
+      this.$store.dispatch("setCurrentFamily", {
+        url: this.$store.getters.getCurrentFamilyURL,
+      });
+    },
+  },
   async beforeCreate() {
     await this.$store.dispatch("setAllFamilies");
   },

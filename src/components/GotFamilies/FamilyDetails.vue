@@ -4,13 +4,13 @@
       <h2>{{ this.$route.params.familyName }}</h2>
       <p class="words">{{ this.$store.getters.getCurrentFamily.words }}</p>
     </div>
-    <blockquote class="coat-of-arms" v-show="this.$route.params.coatOfArms">
-      &#187; {{ this.$route.params.coatOfArms }} &#171;
+    <blockquote class="coat-of-arms">
+      &#187; {{ this.$store.getters.getCurrentFamily.coatOfArms }} &#171;
     </blockquote>
     <div class="house-info-wrapper">
-      <div class="inner-info-wrapper" v-show="this.$route.params.region">
+      <div class="inner-info-wrapper">
         <p class="region-name">Region:</p>
-        <p>{{ this.$route.params.region }}</p>
+        <p>{{ this.$store.getters.getCurrentFamily.region }}</p>
       </div>
       <div class="inner-info-wrapper" v-show="this.$route.params.currentLord">
         <p class="current-lord">Current Lord:</p>
@@ -45,7 +45,7 @@
       </div>
       <div
         class="inner-info-wrapper"
-        v-if="this.$store.getters.getCurrentFamily.seats"
+        v-if="this.$store.getters.getCurrentFamily.seats[0]"
       >
         <p class="house-seats">Seats:</p>
         <ul>
@@ -59,21 +59,21 @@
       </div>
       <div
         class="inner-info-wrapper"
-        v-show="!!this.$store.getters.getCurrentFamily.swornMembers"
+        v-show="this.$store.getters.getCurrentFamily.swornMembers[0]"
       >
-        <p class="house-seats">Sworn Member:</p>
-        <ul>
+        <p>Sworn Member:</p>
+        <ul class="house-sworn-members">
           <li
-            v-for="member in this.$store.getters.getCurrentFamily.swornMembers"
+            v-for="member in this.$store.getters.getCurrentSwornMembers"
             :key="member"
           >
-            {{ member }}
+            {{ member.name }}
           </li>
         </ul>
       </div>
       <div
         class="inner-info-wrapper"
-        v-show="!!this.$store.getters.getCurrentFamily.titles"
+        v-show="this.$store.getters.getCurrentFamily.titles[0]"
       >
         <p class="house-titles">Titles:</p>
         <ul>
@@ -133,18 +133,48 @@ export default {
     async setCurrentFounder() {
       await this.$store.dispatch("setCurrentFounder");
     },
+    async setCurrentSwornMembersURL() {
+      await this.$store.getters.getCurrentFamily.swornMembers.forEach(
+        (member) => {
+          this.$store.commit("setCurrentSwornMembersURL", {
+            url: member,
+          });
+        }
+      );
+    },
+    async setCurrentSwornMembers() {
+      await this.$store.getters.getCurrentSwornMembersURL.forEach((member) => {
+        this.$store.dispatch({
+          type: "setCurrentSwornMembers",
+          url: member.url,
+        });
+      });
+    },
   },
+  async beforeCreate() {},
   async created() {
-    this.setCurrentFamilyURL();
+    await this.setCurrentFamilyURL();
     await this.setCurrentFamily();
     await this.setCurrentLordURL();
-    await this.setCurrentLord();
+    if (this.$store.getters.getCurrentLordURL ?? null) {
+      await this.setCurrentLord();
+    }
     await this.setCurrentOverlordURL();
-    await this.setCurrentOverlord();
+    if (this.$store.getters.getCurrentOverlordURL ?? null) {
+      await this.setCurrentOverlord();
+    }
     await this.setCurrentHeirURL();
-    await this.setCurrentHeir();
+    if (this.$store.getters.getCurrentHeirURL ?? null) {
+      await this.setCurrentHeir();
+    }
     await this.setCurrentFounderURL();
-    await this.setCurrentFounder();
+    if (this.$store.getters.getCurrentFounderURL ?? null) {
+      await this.setCurrentFounder();
+    }
+    await this.setCurrentSwornMembersURL();
+    if (this.$store.getters.getCurrentSwornMembersURL ?? null) {
+      await this.setCurrentSwornMembers();
+    }
   },
   beforeRouteUpdate() {
     this.familyName = this.$route.params.familyName;
@@ -202,5 +232,8 @@ h2 {
     width: 75%;
     text-align: left;
   }
+}
+.house-sworn-members {
+  text-align: left;
 }
 </style>

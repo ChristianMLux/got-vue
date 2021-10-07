@@ -14,8 +14,20 @@ export default createStore({
     currentHeirURL: "",
     currentFounder: "",
     currentFounderURL: "",
+    currentSwornMembersURL: [],
+    currentSwornMembers: [],
   },
   mutations: {
+    unsetArrays(state) {
+      state.currentSwornMembersURL = [""];
+      state.currentSwornMembers = [""];
+    },
+    setCurrentSwornMembersURL(state, payload) {
+      state.currentSwornMembersURL.push(payload);
+    },
+    setCurrentSwornMembers(state, payload) {
+      state.currentSwornMembers.push(payload.member);
+    },
     setCurrentFounderURL(state, payload) {
       state.currentFounderURL = payload.url;
     },
@@ -51,6 +63,19 @@ export default createStore({
     },
   },
   actions: {
+    async setCurrentSwornMembers(state, url) {
+      const apiResponse = await fetch(url.url, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        method: "GET",
+      });
+      state.commit({
+        type: "setCurrentSwornMembers",
+        member: await apiResponse.json(),
+      });
+    },
     async setCurrentFounder(state) {
       let url = state.getters.getCurrentFounderURL;
       const apiResponse = await fetch(url, {
@@ -143,6 +168,12 @@ export default createStore({
   },
   modules: {},
   getters: {
+    getCurrentSwornMembersURL(state) {
+      return state.currentSwornMembersURL;
+    },
+    getCurrentSwornMembers(state) {
+      return state.currentSwornMembers;
+    },
     getCurrentFounderURL(state) {
       return state.currentFounderURL;
     },

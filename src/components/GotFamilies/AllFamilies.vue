@@ -30,6 +30,7 @@
             v-for="family in familySet.families"
             :key="family.name"
             :familyName="family.name"
+            :region="family.region"
             v-bind="family"
           >
           </FamilyListElement>
@@ -50,6 +51,7 @@
             v-for="family in familySet.families"
             :key="family.name"
             :familyName="family.name"
+            :region="family.region"
             v-bind="family"
           >
           </FamilyListElement>
@@ -80,6 +82,12 @@ export default {
     },
   },
   methods: {
+    async initCurrentFamily() {
+      await this.$store.commit("setCurrentFamilyURL", {
+        url: "https://www.anapioficeandfire.com/api/houses/1",
+      });
+      await this.$store.dispatch("setCurrentFamily");
+    },
     changeFilter() {
       this.isFiltered = !this.isFiltered;
       this.pageSwitched = !this.pageSwitched;
@@ -101,6 +109,9 @@ export default {
         this.limitMax--;
       }
     },
+  },
+  async created() {
+    await this.initCurrentFamily();
   },
 };
 </script>
