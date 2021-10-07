@@ -34,18 +34,7 @@
         <p class="house-heir">Heir:</p>
         <p>{{ this.$store.getters.getCurrentHeir.name }}</p>
       </div>
-      <div class="inner-info-wrapper" v-if="this.hasSeats">
-        <p class="house-seats">Seats:</p>
-        <ul>
-          <li
-            v-for="seat in this.$store.getters.getCurrentFamily.seats"
-            :key="seat"
-            v-bind="seat"
-          >
-            {{ seat }}
-          </li>
-        </ul>
-      </div>
+
       <div class="inner-info-wrapper" v-if="hasSwornMembers">
         <p>Sworn Member:</p>
         <ul class="house-sworn-members">
@@ -91,7 +80,7 @@ export default {
       return this.$store.getters.getCurrentFamily.heir ? true : false;
     },
     hasSeats() {
-      if (this.$store.getters.getCurrentFamily.seats[0] ?? "") {
+      if (this.$store.getters.getCurrentFamily.seats[0]) {
         return true;
       } else {
         return false;
