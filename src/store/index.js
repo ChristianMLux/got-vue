@@ -18,9 +18,19 @@ export default createStore({
     currentSwornMembers: [],
   },
   mutations: {
-    unsetArrays(state) {
-      state.currentSwornMembersURL = [""];
-      state.currentSwornMembers = [""];
+    resetCurrentFamily(state) {
+      state.currentFamily = {};
+      state.currentFamilyURL = "";
+      state.currentLord = "";
+      state.currentLordURL = "";
+      state.currentOverlord = "";
+      state.currentOverlordURL = "";
+      state.currentHeir = "";
+      state.currentHeirURL = "";
+      state.currentFounder = "";
+      state.currentFounderURL = "";
+      state.currentSwornMembersURL = [];
+      state.currentSwornMembers = [];
     },
     setCurrentSwornMembersURL(state, payload) {
       state.currentSwornMembersURL.push(payload);
@@ -141,9 +151,10 @@ export default createStore({
         },
         method: "GET",
       });
+      let _family = await apiResponse.json();
       state.commit({
         type: "setCurrentFamily",
-        family: await apiResponse.json(),
+        family: _family,
       });
     },
     async setAllFamilies(state) {

@@ -1,10 +1,13 @@
 <template>
   <section class="details-section">
     <div class="house-heading">
-      <h2>{{ this.$route.params.familyName }}</h2>
+      <h2>{{ this.$store.getters.getCurrentFamily.name }}</h2>
       <p class="words">{{ this.$store.getters.getCurrentFamily.words }}</p>
     </div>
-    <blockquote class="coat-of-arms">
+    <blockquote
+      class="coat-of-arms"
+      v-if="this.$store.getters.getCurrentFamily.coatOfArms"
+    >
       &#187; {{ this.$store.getters.getCurrentFamily.coatOfArms }} &#171;
     </blockquote>
     <div class="house-info-wrapper">
@@ -12,60 +15,44 @@
         <p class="region-name">Region:</p>
         <p>{{ this.$store.getters.getCurrentFamily.region }}</p>
       </div>
-      <div class="inner-info-wrapper" v-show="this.$route.params.currentLord">
+      <div class="inner-info-wrapper" v-if="hasALord">
         <p class="current-lord">Current Lord:</p>
-        <p v-if="this.$store.getters.getCurrentLord.titles[0]">
-          {{ this.$store.getters.getCurrentLord.titles[0] }}
-          {{ this.$store.getters.getCurrentLord.name }}
-        </p>
-        <p v-else>{{ this.$store.getters.getCurrentLord.name }}</p>
+        <p>{{ this.$store.getters.getCurrentLord.name }}</p>
       </div>
       <div
         class="inner-info-wrapper"
-        v-if="this.$store.getters.getCurrentFounder"
+        v-if="this.$store.getters.getCurrentFamily.founder"
       >
         <p class="house-founder">Founder:</p>
-
-        <p v-if="this.$store.getters.getCurrentFounder.aliases[0]">
-          {{ this.$store.getters.getCurrentFounder.name }}
-          {{ this.$store.getters.getCurrentFounder.aliases[0] }}
-        </p>
-        <p v-else>{{ this.$store.getters.getCurrentFounder.name }}</p>
+        <p>{{ this.$store.getters.getCurrentFounder.name }}</p>
       </div>
-      <div
-        class="inner-info-wrapper"
-        v-if="this.$store.getters.getCurrentFamily.heir"
-      >
-        <p class="house-heir">Heir:</p>
-        <p>{{ this.$store.getters.getCurrentHeir.name }}</p>
-      </div>
-      <div class="inner-info-wrapper" v-show="this.$route.params.overlord">
+      <div class="inner-info-wrapper" v-if="hasAnOverlord">
         <p class="house-overlord">Overlord:</p>
         <p>{{ this.$store.getters.getCurrentOverlord.name }}</p>
       </div>
-      <div
-        class="inner-info-wrapper"
-        v-if="this.$store.getters.getCurrentFamily.seats[0]"
-      >
+      <div class="inner-info.wrapper" v-if="hasAHeir">
+        <p class="house-heir">Heir:</p>
+        <p>{{ this.$store.getters.getCurrentHeir.name }}</p>
+      </div>
+      <div class="inner-info-wrapper" v-if="this.hasSeats">
         <p class="house-seats">Seats:</p>
         <ul>
           <li
             v-for="seat in this.$store.getters.getCurrentFamily.seats"
             :key="seat"
+            v-bind="seat"
           >
             {{ seat }}
           </li>
         </ul>
       </div>
-      <div
-        class="inner-info-wrapper"
-        v-show="this.$store.getters.getCurrentFamily.swornMembers[0]"
-      >
+      <div class="inner-info-wrapper" v-if="hasSwornMembers">
         <p>Sworn Member:</p>
         <ul class="house-sworn-members">
           <li
             v-for="member in this.$store.getters.getCurrentSwornMembers"
-            :key="member"
+            :key="member.name"
+            v-bind="member"
           >
             {{ member.name }}
           </li>
@@ -73,13 +60,14 @@
       </div>
       <div
         class="inner-info-wrapper"
-        v-show="this.$store.getters.getCurrentFamily.titles[0]"
+        v-if="this.$store.getters.getCurrentFamily.titles[0]"
       >
         <p class="house-titles">Titles:</p>
         <ul>
           <li
             v-for="title in this.$store.getters.getCurrentFamily.titles"
-            :key="title"
+            :key="title.name"
+            v-bind="title"
           >
             {{ title }}
           </li>
@@ -92,10 +80,72 @@
 <script>
 export default {
   name: "FamilyDetails",
+  computed: {
+    hasALord() {
+      return this.$store.getters.getCurrentFamily.currentLord ? true : false;
+    },
+    hasAnOverlord() {
+      return this.$store.getters.getCurrentFamily.overlord ? true : false;
+    },
+    hasAHeir() {
+      return this.$store.getters.getCurrentFamily.heir ? true : false;
+    },
+    hasSeats() {
+      if (this.$store.getters.getCurrentFamily.seats[0] ?? "") {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    hasSwornMembers() {
+      return this.$store.getters.getCurrentFamily.swornMembers[0]
+        ? true
+        : false;
+    },
+  },
   methods: {
+    async initCurrentFamily() {
+      await this.$store.commit("setCurrentFamilyURL", {
+        url:
+          "https://www.anapioficeandfire.com/api/houses/" +
+          this.$route.params.familyID,
+      });
+      await this.$store.dispatch("setCurrentFamily");
+      await this.$store.commit("setCurrentLordURL", {
+        url: this.$store.getters.getCurrentFamily.currentLord,
+      });
+      await this.$store.dispatch("setCurrentLord");
+      await this.$store.commit("setCurrentOverlordURL", {
+        url: this.$store.getters.getCurrentFamily.overlord,
+      });
+      await this.$store.dispatch("setCurrentOverlord");
+      await this.$store.commit("setCurrentHeirURL", {
+        url: this.$store.getters.getCurrentFamily.heir,
+      });
+      await this.$store.dispatch("setCurrentHeir");
+      await this.$store.commit("setCurrentFounderURL", {
+        url: this.$store.getters.getCurrentFamily.founder,
+      });
+      await this.$store.dispatch("setCurrentFounder");
+      await this.$store.getters.getCurrentFamily.swornMembers.forEach(
+        (member) => {
+          this.$store.commit("setCurrentSwornMembersURL", {
+            url: member,
+          });
+        }
+      );
+      await this.$store.getters.getCurrentSwornMembersURL.forEach((member) => {
+        this.$store.dispatch({
+          type: "setCurrentSwornMembers",
+          url: member.url,
+        });
+      });
+    },
     async setCurrentFamilyURL() {
       await this.$store.commit("setCurrentFamilyURL", {
-        url: this.$route.params.url,
+        url:
+          "https://www.anapioficeandfire.com/api/houses/" +
+          this.$route.params.familyID,
       });
     },
     async setCurrentFamily() {
@@ -151,33 +201,42 @@ export default {
       });
     },
   },
-  async beforeCreate() {},
   async created() {
     await this.setCurrentFamilyURL();
     await this.setCurrentFamily();
-    await this.setCurrentLordURL();
-    if (this.$store.getters.getCurrentLordURL ?? null) {
+    if (this.hasALord) {
+      await this.setCurrentLordURL();
       await this.setCurrentLord();
+    } else {
+      console.error("No Lord");
     }
-    await this.setCurrentOverlordURL();
-    if (this.$store.getters.getCurrentOverlordURL ?? null) {
+    if (this.hasAnOverlord) {
+      await this.setCurrentOverlordURL();
       await this.setCurrentOverlord();
+    } else {
+      console.error("No Overlord");
     }
-    await this.setCurrentHeirURL();
-    if (this.$store.getters.getCurrentHeirURL ?? null) {
+    if (this.hasAHeir) {
+      await this.setCurrentHeirURL();
       await this.setCurrentHeir();
+    } else {
+      console.error("No Heir");
     }
-    await this.setCurrentFounderURL();
-    if (this.$store.getters.getCurrentFounderURL ?? null) {
+    if (this.$store.getters.getCurrentFamily.founder ?? null) {
+      await this.setCurrentFounderURL();
       await this.setCurrentFounder();
+    } else {
+      console.error("No Founder");
     }
-    await this.setCurrentSwornMembersURL();
-    if (this.$store.getters.getCurrentSwornMembersURL ?? null) {
+    if (this.hasSwornMembers) {
+      await this.setCurrentSwornMembersURL();
       await this.setCurrentSwornMembers();
+    } else {
+      console.error("No Sworn Members");
     }
   },
   beforeRouteUpdate() {
-    this.familyName = this.$route.params.familyName;
+    this.familyID = this.$route.params.familyID;
   },
 };
 </script>

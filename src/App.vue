@@ -17,14 +17,38 @@ export default {
   name: "App",
   methods: {
     resetCurrentFamily() {
-      this.$store.commit("unsetArrays");
-      this.$store.dispatch("setCurrentFamily", {
-        url: this.$store.getters.getCurrentFamilyURL,
-      });
+      this.$store.commit("resetCurrentFamily");
+    },
+    popstateEventAction() {
+      this.$store.commit("resetCurrentFamily");
+      this.removePopstateEventAction();
+    },
+    removePopstateEventAction() {
+      window.removeEventListener("popstate", this.popstateEventAction);
     },
   },
   async beforeCreate() {
-    await this.$store.dispatch("setAllFamilies");
+    if (this.$store.getters.getAllFamilies ?? null) {
+      await this.$store.dispatch("setAllFamilies");
+    }
+  },
+  mounted() {
+    // if back button is pressed
+    window.popStateDetected = false;
+    window.addEventListener("popstate", () => {
+      window.popStateDetected = true;
+    });
+
+    this.$router.beforeEach((to, from, next) => {
+      const IsItABackButton = window.popStateDetected;
+      window.popStateDetected = false;
+      if (IsItABackButton && from.meta.someLogica) {
+        next(false);
+        this.$store.commit("resetCurrentFamily");
+        return "";
+      }
+      next();
+    });
   },
 };
 </script>

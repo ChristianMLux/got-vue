@@ -28,9 +28,9 @@
         <ul class="families-list">
           <FamilyListElement
             v-for="family in familySet.families"
-            :key="family.name"
+            :key="this.setFamilyID(family.url)"
+            :familyID="this.setFamilyID(family.url)"
             :familyName="family.name"
-            :region="family.region"
             v-bind="family"
           >
           </FamilyListElement>
@@ -49,9 +49,9 @@
         <ul class="families-list">
           <FamilyListElement
             v-for="family in familySet.families"
-            :key="family.name"
+            :key="this.setFamilyID(family.url)"
+            :familyID="this.setFamilyID(family.url)"
             :familyName="family.name"
-            :region="family.region"
             v-bind="family"
           >
           </FamilyListElement>
@@ -68,8 +68,8 @@ export default {
   components: { FamilyListElement },
   data() {
     return {
-      isFiltered: false,
-      pageSwitched: false,
+      isFiltered: true,
+      pageSwitched: true,
       limitMin: 0,
       limitMax: 1,
       showMore: "Show All",
@@ -82,11 +82,10 @@ export default {
     },
   },
   methods: {
-    async initCurrentFamily() {
-      await this.$store.commit("setCurrentFamilyURL", {
-        url: "https://www.anapioficeandfire.com/api/houses/1",
-      });
-      await this.$store.dispatch("setCurrentFamily");
+    setFamilyID(url) {
+      var n = url.lastIndexOf("/");
+      var result = url.substring(n + 1);
+      return result;
     },
     changeFilter() {
       this.isFiltered = !this.isFiltered;
@@ -109,9 +108,6 @@ export default {
         this.limitMax--;
       }
     },
-  },
-  async created() {
-    await this.initCurrentFamily();
   },
 };
 </script>
