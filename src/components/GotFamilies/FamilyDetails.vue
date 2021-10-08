@@ -11,7 +11,7 @@
       &#187; {{ this.$store.getters.getCurrentFamily.coatOfArms }} &#171;
     </blockquote>
     <div class="house-info-wrapper">
-      <div class="inner-info-wrapper">
+      <div class="inner-info-wrapper" v-if="hasRegion">
         <p class="region-name">Region:</p>
         <p>{{ this.$store.getters.getCurrentFamily.region }}</p>
       </div>
@@ -30,7 +30,7 @@
         <p class="house-overlord">Overlord:</p>
         <p>{{ this.$store.getters.getCurrentOverlord.name }}</p>
       </div>
-      <div class="inner-info.wrapper" v-if="hasAHeir">
+      <div class="inner-info-wrapper" v-if="hasAHeir">
         <p class="house-heir">Heir:</p>
         <p>{{ this.$store.getters.getCurrentHeir.name }}</p>
       </div>
@@ -67,6 +67,9 @@
 export default {
   name: "FamilyDetails",
   computed: {
+    hasRegion() {
+      return this.$store.getters.getCurrentFamily.region ? true : false;
+    },
     hasALord() {
       return this.$store.getters.getCurrentFamily.currentLord ? true : false;
     },
@@ -99,43 +102,6 @@ export default {
     },
   },
   methods: {
-    async initCurrentFamily() {
-      await this.$store.commit("setCurrentFamilyURL", {
-        url:
-          "https://www.anapioficeandfire.com/api/houses/" +
-          this.$route.params.familyID,
-      });
-      await this.$store.dispatch("setCurrentFamily");
-      await this.$store.commit("setCurrentLordURL", {
-        url: this.$store.getters.getCurrentFamily.currentLord,
-      });
-      await this.$store.dispatch("setCurrentLord");
-      await this.$store.commit("setCurrentOverlordURL", {
-        url: this.$store.getters.getCurrentFamily.overlord,
-      });
-      await this.$store.dispatch("setCurrentOverlord");
-      await this.$store.commit("setCurrentHeirURL", {
-        url: this.$store.getters.getCurrentFamily.heir,
-      });
-      await this.$store.dispatch("setCurrentHeir");
-      await this.$store.commit("setCurrentFounderURL", {
-        url: this.$store.getters.getCurrentFamily.founder,
-      });
-      await this.$store.dispatch("setCurrentFounder");
-      await this.$store.getters.getCurrentFamily.swornMembers.forEach(
-        (member) => {
-          this.$store.commit("setCurrentSwornMembersURL", {
-            url: member,
-          });
-        }
-      );
-      await this.$store.getters.getCurrentSwornMembersURL.forEach((member) => {
-        this.$store.dispatch({
-          type: "setCurrentSwornMembers",
-          url: member.url,
-        });
-      });
-    },
     async setCurrentFamilyURL() {
       await this.$store.commit("setCurrentFamilyURL", {
         url:
