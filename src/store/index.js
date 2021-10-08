@@ -1,6 +1,6 @@
 import { createStore } from "vuex";
 
-let housePageCount = 10;
+let housePageCount = 24;
 export default createStore({
   state: {
     allFamilies: [],
@@ -82,7 +82,7 @@ export default createStore({
         method: "GET",
       });
       const sleep = (m) => new Promise((r) => setTimeout(r, m));
-      await sleep(250);
+      await sleep(500);
       state.commit({
         type: "setCurrentSwornMembers",
         member: await apiResponse.json(),
@@ -164,7 +164,7 @@ export default createStore({
         let url =
           "https://www.anapioficeandfire.com/api/houses?page=" +
           i +
-          "&pageSize=50";
+          "&pageSize=20";
         const apiResponse = await fetch(url, {
           headers: {
             Accept: "application/json",

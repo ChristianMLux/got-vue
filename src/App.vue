@@ -9,7 +9,9 @@
       <router-link to="/" @click="resetCurrentFamily">All Families</router-link>
     </nav>
   </header>
-  <router-view />
+  <main>
+    <router-view />
+  </main>
 </template>
 
 <script>
@@ -19,17 +21,10 @@ export default {
     resetCurrentFamily() {
       this.$store.commit("resetCurrentFamily");
     },
-    popstateEventAction() {
-      this.$store.commit("resetCurrentFamily");
-      this.removePopstateEventAction();
-    },
-    removePopstateEventAction() {
-      window.removeEventListener("popstate", this.popstateEventAction);
-    },
   },
-  async beforeCreate() {
+  beforeCreate() {
     if (this.$store.getters.getAllFamilies ?? null) {
-      await this.$store.dispatch("setAllFamilies");
+      this.$store.dispatch("setAllFamilies");
     }
   },
   mounted() {
