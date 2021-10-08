@@ -82,15 +82,19 @@ export default {
     },
   },
   methods: {
+    /* Takes the numbers after the last slash in the family url to set ID*/
     setFamilyID(url) {
       var n = url.lastIndexOf("/");
       var result = url.substring(n + 1);
       return result;
     },
+    /* Changes filterstatus and pageswitched status */
     changeFilter() {
       this.isFiltered = !this.isFiltered;
       this.pageSwitched = !this.pageSwitched;
     },
+    /* let users press page forward till limit is reached. 
+       if limit is reached, resets the counter */
     switchPageForward() {
       if (this.limitMax <= 10) {
         this.pageSwitched = true;
@@ -102,6 +106,7 @@ export default {
         this.limitMax = 1;
       }
     },
+    /* browse back in pages. reduces the limits for each click */
     switchPageBackward() {
       if (this.limitMin >= 0) {
         this.limitMin--;

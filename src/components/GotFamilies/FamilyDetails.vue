@@ -47,10 +47,7 @@
           </li>
         </ul>
       </div>
-      <div
-        class="inner-info-wrapper"
-        v-if="this.$store.getters.getCurrentFamily.titles[0]"
-      >
+      <div class="inner-info-wrapper" v-if="hasFamilyTitle">
         <p class="house-titles">Titles:</p>
         <ul>
           <li
@@ -87,7 +84,16 @@ export default {
       }
     },
     hasSwornMembers() {
-      return this.$store.getters.getCurrentFamily.swornMembers[0]
+      return this.$store.getters.getCurrentFamily &&
+        this.$store.getters.getCurrentFamily.swornMembers !== "" &&
+        this.$store.getters.getCurrentFamily.swornMembers[0]
+        ? true
+        : false;
+    },
+    hasFamilyTitle() {
+      return this.$store.getters.getCurrentFamily &&
+        this.$store.getters.getCurrentFamily.titles !== "" &&
+        this.$store.getters.getCurrentFamily.titles[0]
         ? true
         : false;
     },
