@@ -73,7 +73,7 @@ export default {
       limitMin: 0,
       limitMax: 1,
       showMore: "Show All",
-      showLess: "Show 50 per Page",
+      showLess: "Show 20 per Page",
     };
   },
   computed: {
@@ -96,7 +96,7 @@ export default {
     /* let users press page forward till limit is reached. 
        if limit is reached, resets the counter */
     switchPageForward() {
-      if (this.limitMax <= 10) {
+      if (this.limitMax <= 24) {
         this.pageSwitched = true;
         this.limitMin++;
         this.limitMax++;
