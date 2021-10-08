@@ -17,7 +17,11 @@
       </div>
       <div class="inner-info-wrapper" v-if="hasALord">
         <p class="current-lord">Current Lord:</p>
-        <p>{{ this.$store.getters.getCurrentLord.name }}</p>
+        <p v-if="LordHasTitle">
+          {{ this.$store.getters.getCurrentLord.titles[0] }}
+          {{ this.$store.getters.getCurrentLord.name }}
+        </p>
+        <p v-else>{{ this.$store.getters.getCurrentLord.name }}</p>
       </div>
       <div
         class="inner-info-wrapper"
@@ -34,7 +38,6 @@
         <p class="house-heir">Heir:</p>
         <p>{{ this.$store.getters.getCurrentHeir.name }}</p>
       </div>
-
       <div class="inner-info-wrapper" v-if="hasSwornMembers">
         <p>Sworn Member:</p>
         <ul class="house-sworn-members">
@@ -72,6 +75,9 @@ export default {
     },
     hasALord() {
       return this.$store.getters.getCurrentFamily.currentLord ? true : false;
+    },
+    LordHasTitle() {
+      return this.$store.getters.getCurrentLord.titles[0] ? true : false;
     },
     hasAnOverlord() {
       return this.$store.getters.getCurrentFamily.overlord ? true : false;
