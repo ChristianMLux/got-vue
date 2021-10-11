@@ -108,7 +108,7 @@ export default {
     },
     /* browse back in pages. reduces the limits for each click */
     switchPageBackward() {
-      if (this.limitMin >= 0) {
+      if (this.limitMin > 0) {
         this.limitMin--;
         this.limitMax--;
       }
