@@ -1,7 +1,10 @@
 <template>
   <section class="details-section">
     <div class="house-heading">
-      <h2>{{ this.$store.getters.getCurrentFamily.name }}</h2>
+      <h2>
+        {{ this.$store.getters.getCurrentFamily.name }} <br />
+        {{ familyTitles[0] }}
+      </h2>
       <p class="words">{{ this.$store.getters.getCurrentFamily.words }}</p>
     </div>
     <blockquote
@@ -53,21 +56,6 @@
           </li>
         </ul>
       </div>
-      <main-btn
-        buttonClass="primary"
-        class="hidenshow-btn"
-        v-if="hasFamilyTitle"
-        @click="showFamilyTitles"
-        ><p>{{ showFamilyTitlesBtnText }}</p></main-btn
-      >
-      <div class="inner-info-wrapper" v-if="familyTitlesShown">
-        <p>Family Titles</p>
-        <ul class="family-titles">
-          <li v-for="title in familyTitles" :key="title" v-bind="title">
-            {{ title }}
-          </li>
-        </ul>
-      </div>
     </div>
   </section>
 </template>
@@ -80,17 +68,9 @@ export default {
       showSwornMembersText: "Show Sworn Members",
       hideSwornMembersText: "Hide Sworn Members",
       swornMembersShown: false,
-      showFamilyTitlesText: "Show Family Titles",
-      hideFamilyTitlesText: "Hide Family Titles",
-      familyTitlesShown: false,
     };
   },
   computed: {
-    showFamilyTitlesBtnText() {
-      return this.familyTitlesShown
-        ? this.hideFamilyTitlesText
-        : this.showFamilyTitlesText;
-    },
     showSwornMembersBtnText() {
       return this.swornMembersShown
         ? this.hideSwornMembersText
@@ -135,18 +115,8 @@ export default {
         ? true
         : false;
     },
-    hasFamilyTitle() {
-      return this.$store.getters.getCurrentFamily &&
-        this.$store.getters.getCurrentFamily.titles !== "" &&
-        this.$store.getters.getCurrentFamily.titles[0]
-        ? true
-        : false;
-    },
   },
   methods: {
-    showFamilyTitles() {
-      this.familyTitlesShown = !this.familyTitlesShown;
-    },
     showSwornMembers() {
       this.swornMembersShown = !this.swornMembersShown;
     },
@@ -266,6 +236,7 @@ export default {
 }
 h2 {
   margin: 0;
+  text-align: left;
 }
 .words {
   margin: 0;
