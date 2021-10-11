@@ -8,7 +8,7 @@ const routes = [
     component: Home,
   },
   {
-    path: "/:familyID/:familyName",
+    path: "/:familyID",
     name: "FamilyDetails",
     component: () =>
       import(

@@ -4,7 +4,6 @@
       name: 'FamilyDetails',
       params: {
         familyID,
-        familyName,
       },
     }"
   >
