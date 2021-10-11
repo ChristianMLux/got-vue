@@ -1,6 +1,7 @@
 import { createStore } from "vuex";
 
 let housePageCount = 24;
+//const sleep = (m) => new Promise((r) => setTimeout(r, m));
 export default createStore({
   state: {
     allFamilies: [],
@@ -81,8 +82,6 @@ export default createStore({
         },
         method: "GET",
       });
-      const sleep = (m) => new Promise((r) => setTimeout(r, m));
-      await sleep(500);
       state.commit({
         type: "setCurrentSwornMembers",
         member: await apiResponse.json(),

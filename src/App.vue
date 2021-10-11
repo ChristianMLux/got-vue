@@ -6,7 +6,7 @@
       src="@/assets/Game_of_Thrones_logo.svg"
     />
     <nav class="main-nav">
-      <router-link to="/" @click="resetCurrentFamily">All Families</router-link>
+      <router-link to="/">All Families</router-link>
     </nav>
   </header>
   <main>
@@ -17,11 +17,6 @@
 <script>
 export default {
   name: "App",
-  methods: {
-    resetCurrentFamily() {
-      this.$store.commit("resetCurrentFamily");
-    },
-  },
   beforeCreate() {
     if (this.$store.getters.getAllFamilies ?? null) {
       this.$store.dispatch("setAllFamilies");
@@ -33,7 +28,6 @@ export default {
     window.addEventListener("popstate", () => {
       window.popStateDetected = true;
     });
-
     this.$router.beforeEach((to, from, next) => {
       const IsItABackButton = window.popStateDetected;
       window.popStateDetected = false;

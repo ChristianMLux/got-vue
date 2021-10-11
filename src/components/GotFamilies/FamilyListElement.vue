@@ -17,7 +17,6 @@
 <script>
 export default {
   name: "FamilyListElement",
-
   props: {
     familyID: {
       type: [String, Number],

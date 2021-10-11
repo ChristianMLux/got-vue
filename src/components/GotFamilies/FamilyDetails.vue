@@ -38,26 +38,32 @@
         <p class="house-heir">Heir:</p>
         <p>{{ this.$store.getters.getCurrentHeir.name }}</p>
       </div>
-      <div class="inner-info-wrapper" v-if="hasSwornMembers">
+      <main-btn
+        buttonClass="primary"
+        class="hidenshow-btn"
+        v-if="hasSwornMembers"
+        @click="showSwornMembers"
+        ><p>{{ showSwornMembersBtnText }}</p></main-btn
+      >
+      <div class="inner-info-wrapper" v-if="swornMembersShown">
         <p>Sworn Member:</p>
         <ul class="house-sworn-members">
-          <li
-            v-for="member in this.$store.getters.getCurrentSwornMembers"
-            :key="member.name"
-            v-bind="member"
-          >
+          <li v-for="member in swornMembers" :key="member.name" v-bind="member">
             {{ member.name }}
           </li>
         </ul>
       </div>
-      <div class="inner-info-wrapper" v-if="hasFamilyTitle">
-        <p class="house-titles">Titles:</p>
-        <ul>
-          <li
-            v-for="title in this.$store.getters.getCurrentFamily.titles"
-            :key="title.name"
-            v-bind="title"
-          >
+      <main-btn
+        buttonClass="primary"
+        class="hidenshow-btn"
+        v-if="hasFamilyTitle"
+        @click="showFamilyTitles"
+        ><p>{{ showFamilyTitlesBtnText }}</p></main-btn
+      >
+      <div class="inner-info-wrapper" v-if="familyTitlesShown">
+        <p>Family Titles</p>
+        <ul class="family-titles">
+          <li v-for="title in familyTitles" :key="title" v-bind="title">
             {{ title }}
           </li>
         </ul>
@@ -69,7 +75,27 @@
 <script>
 export default {
   name: "FamilyDetails",
+  data() {
+    return {
+      showSwornMembersText: "Show Sworn Members",
+      hideSwornMembersText: "Hide Sworn Members",
+      swornMembersShown: false,
+      showFamilyTitlesText: "Show Family Titles",
+      hideFamilyTitlesText: "Hide Family Titles",
+      familyTitlesShown: false,
+    };
+  },
   computed: {
+    showFamilyTitlesBtnText() {
+      return this.familyTitlesShown
+        ? this.hideFamilyTitlesText
+        : this.showFamilyTitlesText;
+    },
+    showSwornMembersBtnText() {
+      return this.swornMembersShown
+        ? this.hideSwornMembersText
+        : this.showSwornMembersText;
+    },
     hasRegion() {
       return this.$store.getters.getCurrentFamily.region ? true : false;
     },
@@ -92,6 +118,16 @@ export default {
         return false;
       }
     },
+    swornMembers() {
+      return this.$store.getters.getCurrentSwornMembers ?? null
+        ? this.$store.getters.getCurrentSwornMembers
+        : "nope";
+    },
+    familyTitles() {
+      return this.$store.getters.getCurrentFamily.titles
+        ? this.$store.getters.getCurrentFamily.titles
+        : "no titles";
+    },
     hasSwornMembers() {
       return this.$store.getters.getCurrentFamily &&
         this.$store.getters.getCurrentFamily.swornMembers !== " " &&
@@ -108,6 +144,12 @@ export default {
     },
   },
   methods: {
+    showFamilyTitles() {
+      this.familyTitlesShown = !this.familyTitlesShown;
+    },
+    showSwornMembers() {
+      this.swornMembersShown = !this.swornMembersShown;
+    },
     async setCurrentFamilyURL() {
       await this.$store.commit("setCurrentFamilyURL", {
         url:
@@ -172,31 +214,31 @@ export default {
     await this.setCurrentFamilyURL();
     await this.setCurrentFamily();
     if (this.hasALord) {
-      await this.setCurrentLordURL();
+      this.setCurrentLordURL();
       await this.setCurrentLord();
     } else {
       console.error("No Lord");
     }
     if (this.hasAnOverlord) {
-      await this.setCurrentOverlordURL();
+      this.setCurrentOverlordURL();
       await this.setCurrentOverlord();
     } else {
       console.error("No Overlord");
     }
     if (this.hasAHeir) {
-      await this.setCurrentHeirURL();
+      this.setCurrentHeirURL();
       await this.setCurrentHeir();
     } else {
       console.error("No Heir");
     }
     if (this.$store.getters.getCurrentFamily.founder ?? null) {
-      await this.setCurrentFounderURL();
+      this.setCurrentFounderURL();
       await this.setCurrentFounder();
     } else {
       console.error("No Founder");
     }
     if (this.hasSwornMembers) {
-      await this.setCurrentSwornMembersURL();
+      this.setCurrentSwornMembersURL();
       await this.setCurrentSwornMembers();
     } else {
       console.error("No Sworn Members");
@@ -261,5 +303,8 @@ h2 {
 }
 .house-sworn-members {
   text-align: left;
+}
+.hidenshow-btn {
+  margin: 1rem auto;
 }
 </style>

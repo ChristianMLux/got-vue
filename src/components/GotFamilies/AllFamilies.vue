@@ -114,6 +114,9 @@ export default {
       }
     },
   },
+  created() {
+    this.$store.commit("resetCurrentFamily");
+  },
 };
 </script>
 
